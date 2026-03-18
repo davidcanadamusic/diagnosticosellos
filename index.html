@@ -20,18 +20,18 @@
     .card { max-width: 580px; width: 100%; }
     .david-header { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 28px; }
     .david-img { width: 100%; max-width: 300px; height: auto; border-radius: 16px; }
-    .david-name { font-size: 13px; color: #FFDC00; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .david-name { font-size: 13px; color: #ffe100; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
     .david-role { font-size: 12px; color: #fff; margin-top: 2px; }
     .header { text-align: center; margin-bottom: 28px; }
-    .label { font-size: 15px; color: #FFDC00; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .label { font-size: 15px; color: #ffe100; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
     h1 { font-size: 26px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; }
-    .subtitle2 { font-size: 16px; color: #FFDC00; font-weight: 700; margin-bottom: 8px; }
+    .subtitle2 { font-size: 16px; color: #ffe100; font-weight: 700; margin-bottom: 8px; }
     .subtitle { font-size: 13px; color: #fff; }
     .progress-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
-    .area { color: #FFDC00; font-weight: 600; }
+    .area { color: #ffe100; font-weight: 600; }
     .counter { color: #fff; }
     .progress-bar { background: #222; border-radius: 99px; height: 4px; margin-bottom: 20px; }
-    .progress-fill { background: linear-gradient(90deg, #FFDC00, #e0c000); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .progress-fill { background: linear-gradient(90deg, #ffe100, #ccb400); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
     .question-card { background: #111; border-radius: 16px; padding: 24px; margin-bottom: 12px; }
     .question-text { font-size: 21px; font-weight: 600; line-height: 1.55; margin-bottom: 20px; color: #f0f0f0; }
     .options { display: flex; flex-direction: column; gap: 10px; }
@@ -41,15 +41,15 @@
       text-align: left; cursor: pointer; transition: all 0.2s; line-height: 1.4; width: 100%;
       font-family: inherit;
     }
-    .opt-btn.selected { background: rgba(255,220,0,0.09); border-color: #FFDC00; color: #fff; }
+    .opt-btn.selected { background: rgba(255,225,0,0.09); border-color: #ffe100; color: #fff; }
     .opt-btn .letter { color: #777; font-weight: 700; margin-right: 10px; }
-    .opt-btn.selected .letter { color: #FFDC00; }
+    .opt-btn.selected .letter { color: #ffe100; }
     .next-btn {
       width: 100%; background: #222; color: #555; border: none;
       border-radius: 12px; padding: 16px; font-size: 15px; font-weight: 700;
       cursor: not-allowed; transition: all 0.3s; font-family: inherit;
     }
-    .next-btn.active { background: #FFDC00; color: #000; cursor: pointer; }
+    .next-btn.active { background: #ffe100; color: #000; cursor: pointer; }
     .result-wrap { max-width: 600px; width: 100%; }
     .result-header { text-align: center; margin-bottom: 28px; }
     .result-emoji { font-size: 52px; margin-bottom: 6px; }
@@ -67,23 +67,13 @@
     .diag-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
     .diag-text { font-size: 16px; color: #fff; line-height: 1.75; }
     .cta-box { background: #111; border-radius: 12px; padding: 24px; text-align: center; }
-    .cta-title { font-size: 15px; color: #FFDC00; font-weight: 700; margin-bottom: 8px; }
+    .cta-title { font-size: 15px; color: #ffe100; font-weight: 700; margin-bottom: 8px; }
     .cta-text { font-size: 16px; color: #fff; line-height: 1.7; margin-bottom: 20px; }
     .cta-btn {
-      background: #FFDC00; color: #000; border: none; border-radius: 99px;
+      background: #ffe100; color: #000; border: none; border-radius: 99px;
       padding: 14px 32px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
     }
-    .cta-keyword { font-size: 14px; color: #fff; margin-top: 12px; }
-    .cta-keyword span { color: #FFDC00; font-weight: 700; }
     .cta-user { font-size: 13px; color: #fff; margin-top: 6px; }
-    .restart-wrap { text-align: center; margin-top: 18px; }
-    .restart-btn {
-      background: transparent; color: #fff; border: 1px solid #fff;
-      border-radius: 99px; padding: 8px 20px; font-size: 13px; cursor: pointer; font-family: inherit;
-    }
-    .david-result { display: flex; align-items: center; gap: 16px; background: #1a1a1a; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
-    .david-result-img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; object-position: center top; border: 2px solid #FFDC00; flex-shrink: 0; }
-    .david-result-text { font-size: 13px; color: #fff; line-height: 1.6; }
   </style>
 </head>
 <body>
@@ -202,7 +192,7 @@ function getResult(score) {
   const pct = score / maxScore;
   if (score === maxScore) return {
     level: "Puntuación perfecta — el bloqueo no está donde crees",
-    color: "#FFDC00", emoji: "🎯",
+    color: "#ffe100", emoji: "🎯",
     desc: "Llevas años en esto y se nota. Tienes el sonido, los conocimientos, los contactos y la visión. En más de una década trabajando con productores, he aprendido que cuando alguien domina todos los aspectos técnicos e industriales y aun así no firma, el freno casi nunca está en la música ni en la estrategia visible. Está en capas más profundas: patrones de autosabotaje, gestión del momento oportuno, cómo te posicionas en una conversación clave, o una brecha entre cómo te percibes y cómo te percibe la industria. Son bloqueos sutiles, invisibles en un test, pero absolutamente determinantes. Este tipo de diagnóstico no se puede hacer con preguntas de opción múltiple. Requiere una conversación real.",
     cta: "Si realmente tienes todo lo que indica este test, lo que necesitas no es más información — es que alguien con experiencia te observe, te escuche y te diga exactamente qué está pasando. Eso es lo que hago en una llamada.",
   };
@@ -325,22 +315,15 @@ function renderResult() {
         <div class="diag-title" style="color:${r.color}">🔍 Tu diagnóstico</div>
         <p class="diag-text">${r.desc}</p>
       </div>
-      <div class="cta-box" style="border:1px solid #FFDC00">
+      <div class="cta-box" style="border:1px solid #ffe100">
         <div class="cta-title">¿Y ahora qué?</div>
         <p class="cta-text">${r.cta}</p>
-        <p style="font-size:15px;color:#fff;margin-bottom:20px;line-height:1.7;">Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style="color:#FFDC00;font-weight:700;">FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.</p>
+        <p style="font-size:15px;color:#fff;margin-bottom:20px;line-height:1.7;">Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style="color:#ffe100;font-weight:700;">FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.</p>
         <button class="cta-btn" onclick="window.open('https://ig.me/m/davidcanadamusic','_blank')">Escribir a David Cañada →</button>
         <div class="cta-user">@davidcanadamusic</div>
       </div>
     </div>
   `;
-}
-
-function restartTest() {
-  current = 0;
-  answers = {};
-  selectedIdx = null;
-  renderQuestion();
 }
 
 renderQuestion();
