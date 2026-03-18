@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>¿Por qué no firmas? — El diagnóstico que nadie te ha hecho</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a0a 0%, #111 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .card { max-width: 580px; width: 100%; }
+    .david-header { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .david-img { width: 100%; max-width: 300px; height: auto; border-radius: 16px; }
+    .david-name { font-size: 13px; color: #FFDC00; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .david-role { font-size: 12px; color: #fff; margin-top: 2px; }
+    .header { text-align: center; margin-bottom: 28px; }
+    .label { font-size: 15px; color: #FFDC00; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    h1 { font-size: 26px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; }
+    .subtitle2 { font-size: 16px; color: #FFDC00; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { font-size: 13px; color: #fff; }
+    .progress-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+    .area { color: #FFDC00; font-weight: 600; }
+    .counter { color: #fff; }
+    .progress-bar { background: #222; border-radius: 99px; height: 4px; margin-bottom: 20px; }
+    .progress-fill { background: linear-gradient(90deg, #FFDC00, #e0c000); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .question-card { background: #111; border-radius: 16px; padding: 24px; margin-bottom: 12px; }
+    .question-text { font-size: 21px; font-weight: 600; line-height: 1.55; margin-bottom: 20px; color: #f0f0f0; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt-btn {
+      background: #1a1a1a; border: 1.5px solid #2a2a2a; border-radius: 10px;
+      padding: 13px 16px; color: #ccc; font-size: 18px;
+      text-align: left; cursor: pointer; transition: all 0.2s; line-height: 1.4; width: 100%;
+      font-family: inherit;
+    }
+    .opt-btn.selected { background: rgba(255,220,0,0.09); border-color: #FFDC00; color: #fff; }
+    .opt-btn .letter { color: #777; font-weight: 700; margin-right: 10px; }
+    .opt-btn.selected .letter { color: #FFDC00; }
+    .next-btn {
+      width: 100%; background: #222; color: #555; border: none;
+      border-radius: 12px; padding: 16px; font-size: 15px; font-weight: 700;
+      cursor: not-allowed; transition: all 0.3s; font-family: inherit;
+    }
+    .next-btn.active { background: #FFDC00; color: #000; cursor: pointer; }
+    .result-wrap { max-width: 600px; width: 100%; }
+    .result-header { text-align: center; margin-bottom: 28px; }
+    .result-emoji { font-size: 52px; margin-bottom: 6px; }
+    .result-level { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .result-score { font-size: 13px; color: #fff; }
+    .box { background: #1a1a1a; border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+    .box-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .bar-wrap { background: #333; border-radius: 99px; height: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 99px; }
+    .bar-labels { display: flex; justify-content: space-between; font-size: 11px; color: #fff; margin-top: 4px; }
+    .area-row { margin-bottom: 10px; }
+    .area-label-row { display: flex; justify-content: space-between; font-size: 14px; color: #fff; margin-bottom: 3px; }
+    .area-bar { background: #333; border-radius: 99px; height: 5px; overflow: hidden; }
+    .diag-box { border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+    .diag-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .diag-text { font-size: 16px; color: #fff; line-height: 1.75; }
+    .cta-box { background: #111; border-radius: 12px; padding: 24px; text-align: center; }
+    .cta-title { font-size: 15px; color: #FFDC00; font-weight: 700; margin-bottom: 8px; }
+    .cta-text { font-size: 16px; color: #fff; line-height: 1.7; margin-bottom: 20px; }
+    .cta-btn {
+      background: #FFDC00; color: #000; border: none; border-radius: 99px;
+      padding: 14px 32px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .cta-keyword { font-size: 14px; color: #fff; margin-top: 12px; }
+    .cta-keyword span { color: #FFDC00; font-weight: 700; }
+    .cta-user { font-size: 13px; color: #fff; margin-top: 6px; }
+    .restart-wrap { text-align: center; margin-top: 18px; }
+    .restart-btn {
+      background: transparent; color: #fff; border: 1px solid #fff;
+      border-radius: 99px; padding: 8px 20px; font-size: 13px; cursor: pointer; font-family: inherit;
+    }
+    .david-result { display: flex; align-items: center; gap: 16px; background: #1a1a1a; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    .david-result-img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; object-position: center top; border: 2px solid #FFDC00; flex-shrink: 0; }
+    .david-result-text { font-size: 13px; color: #fff; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const rawQuestions = [
+  { id:1, area:"Calidad Musical", text:"¿Con qué frecuencia terminas y masterizas tus tracks antes de enviarlos a un sello?", options:[
+    {text:"A veces los envío sin masterizar para ver si interesan", score:1},
+    {text:"Siempre los entrego perfectamente terminados", score:3},
+    {text:"No sé exactamente cuándo un track está 'listo'", score:0},
+    {text:"La mayoría de veces, pero no siempre", score:2}
+  ]},
+  { id:2, area:"Posicionamiento", text:"¿Cómo describirías tu sonido como productor?", options:[
+    {text:"Me inspiro en referentes pero intento diferenciarme", score:2},
+    {text:"Aún estoy explorando mi estilo", score:0},
+    {text:"Tengo un sonido propio muy definido y reconocible", score:3},
+    {text:"Produzco lo que está de moda para tener más opciones", score:1}
+  ]},
+  { id:3, area:"Networking", text:"¿Cuántos A&Rs o managers de sellos conoces personalmente (no por email frío)?", options:[
+    {text:"No sé exactamente a quién contactar", score:0},
+    {text:"Más de 5, tengo relaciones sólidas en la industria", score:3},
+    {text:"1 o ninguno, principalmente envío demos por email", score:1},
+    {text:"2 o 3, pero no son relaciones muy profundas", score:2}
+  ]},
+  { id:4, area:"Estrategia de Demos", text:"¿Cómo seleccionas los sellos a los que envías tus demos?", options:[
+    {text:"Envío a todos los sellos que puedo para aumentar posibilidades", score:1},
+    {text:"Investigo a fondo cada sello: su catálogo, su A&R y sus expectativas", score:3},
+    {text:"No tengo una estrategia clara de selección", score:0},
+    {text:"Envío a sellos que me gustan aunque no sepa si encajo", score:2}
+  ]},
+  { id:5, area:"Marca Personal", text:"¿Qué tan activa y coherente es tu presencia en redes sociales como productor?", options:[
+    {text:"Tengo perfil pero casi no lo uso", score:1},
+    {text:"Publico contenido regularmente con una imagen muy clara", score:3},
+    {text:"No creo que las redes influyan en que me firmen", score:0},
+    {text:"Publico a veces, sin una estrategia definida", score:2}
+  ]},
+  { id:6, area:"Gestión del Rechazo", text:"Cuando un sello rechaza tu demo, ¿qué haces?", options:[
+    {text:"Pido feedback específico y lo analizo para mejorar", score:3},
+    {text:"Casi nunca recibo respuesta, simplemente me ignoran", score:0},
+    {text:"Lo acepto y sigo enviando a otros sellos", score:2},
+    {text:"Me desanimo durante un tiempo y luego lo vuelvo a intentar", score:1}
+  ]},
+  { id:7, area:"Comunidad y Escena", text:"¿Participas activamente en la escena (eventos, clubs, colectivos, foros)?", options:[
+    {text:"Vivo en una ciudad sin escena y no sé cómo conectar", score:0},
+    {text:"Soy parte activa de la comunidad y me conocen", score:3},
+    {text:"Prefiero trabajar desde el estudio, no salgo mucho", score:1},
+    {text:"Voy a eventos pero no me involucro mucho", score:2}
+  ]},
+  { id:8, area:"Historial de Releases", text:"¿Cuántos lanzamientos oficiales tienes en sellos o de forma independiente?", options:[
+    {text:"Entre 3 y 9 releases", score:2},
+    {text:"Ninguno todavía", score:0},
+    {text:"Más de 10, tengo un historial sólido", score:3},
+    {text:"1 o 2 lanzamientos", score:1}
+  ]},
+  { id:9, area:"Visión de Negocio", text:"¿Entiendes qué busca un sello discográfico cuando firma a un artista?", options:[
+    {text:"Creo que solo buscan calidad musical", score:1},
+    {text:"No lo tengo claro", score:0},
+    {text:"Sé que quieren buena música, más o menos", score:2},
+    {text:"Buscan retorno económico, encaje de catálogo y potencial de crecimiento", score:3}
+  ]},
+  { id:10, area:"Consistencia de Producción", text:"¿Con qué frecuencia produces y terminas tracks nuevos?", options:[
+    {text:"Produzco constantemente y termino al menos 2-3 tracks al mes", score:3},
+    {text:"Produzco mucho pero termino pocos tracks", score:1},
+    {text:"Solo cuando me siento inspirado, no hay regularidad", score:0},
+    {text:"Intento ser constante aunque hay meses que fallo", score:2}
+  ]},
+  { id:11, area:"Referentes y Mercado", text:"¿Qué tan bien conoces el catálogo de los sellos a los que quieres enviar demos?", options:[
+    {text:"Los escucho ocasionalmente pero no los analizo en profundidad", score:1},
+    {text:"Conozco perfectamente sus últimos releases, su estética y su A&R", score:3},
+    {text:"Los conozco de nombre pero no he revisado su catálogo reciente", score:0},
+    {text:"Sigo sus novedades y entiendo hacia dónde van", score:2}
+  ]},
+  { id:12, area:"Presentación Profesional", text:"Cuando envías una demo, ¿cómo la presentas?", options:[
+    {text:"Envío el link con un mensaje personalizado explicando por qué encaja en su catálogo", score:3},
+    {text:"Envío el link sin mucho más, dejo que la música hable", score:1},
+    {text:"Uso una plantilla estándar que envío a todos", score:0},
+    {text:"Incluyo una pequeña presentación de quién soy y mis referencias", score:2}
+  ]},
+  { id:13, area:"Colaboraciones", text:"¿Con qué frecuencia colaboras con otros artistas, DJs o productores de tu escena?", options:[
+    {text:"Colaboro regularmente, tengo una red activa de artistas", score:3},
+    {text:"He colaborado alguna vez pero no es algo habitual", score:1},
+    {text:"Prefiero trabajar solo, es parte de mi proceso creativo", score:0},
+    {text:"Colaboro cuando surge la oportunidad, sin buscarlo activamente", score:2}
+  ]},
+  { id:14, area:"Gestión del Tiempo", text:"¿Cómo organizas tu tiempo entre producir música y trabajar tu carrera (networking, marketing, envío de demos)?", options:[
+    {text:"Todo mi tiempo va a producir, lo demás lo hago cuando puedo", score:0},
+    {text:"Tengo bloques definidos para producción y para gestión de carrera", score:3},
+    {text:"Intento equilibrarlo pero la producción siempre gana", score:1},
+    {text:"Alterno entre etapas: meses de producción y meses de gestión", score:2}
+  ]},
+  { id:15, area:"Autoconocimiento", text:"Si tuvieras que identificar tu mayor obstáculo ahora mismo para firmar, ¿cuál sería?", options:[
+    {text:"No tengo los contactos correctos en la industria", score:1},
+    {text:"No sé cómo presentarme o hacer un buen pitching", score:1},
+    {text:"No sé exactamente cuál es mi problema, por eso hago este test", score:0},
+    {text:"Mi música aún no está al nivel que exigen los sellos", score:1}
+  ]}
+];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const questions = rawQuestions.map(q => ({...q, options: shuffle(q.options)}));
+const maxScore = rawQuestions.reduce((s, q) => s + Math.max(...q.options.map(o => o.score)), 0);
+
+let current = 0;
+let answers = {};
+let selectedIdx = null;
+
+function getResult(score) {
+  const pct = score / maxScore;
+  if (score === maxScore) return {
+    level: "Puntuación perfecta — el bloqueo no está donde crees",
+    color: "#FFDC00", emoji: "🎯",
+    desc: "Llevas años en esto y se nota. Tienes el sonido, los conocimientos, los contactos y la visión. En más de una década trabajando con productores, he aprendido que cuando alguien domina todos los aspectos técnicos e industriales y aun así no firma, el freno casi nunca está en la música ni en la estrategia visible. Está en capas más profundas: patrones de autosabotaje, gestión del momento oportuno, cómo te posicionas en una conversación clave, o una brecha entre cómo te percibes y cómo te percibe la industria. Son bloqueos sutiles, invisibles en un test, pero absolutamente determinantes. Este tipo de diagnóstico no se puede hacer con preguntas de opción múltiple. Requiere una conversación real.",
+    cta: "Si realmente tienes todo lo que indica este test, lo que necesitas no es más información — es que alguien con experiencia te observe, te escuche y te diga exactamente qué está pasando. Eso es lo que hago en una llamada.",
+  };
+  if (pct >= 0.78) return {
+    level: "Productor preparado — pero algo falla en tu estrategia",
+    color: "#f0a500", emoji: "⚡",
+    desc: "Tu música y conocimiento son sólidos, pero algo en tu estrategia de posicionamiento o networking está bloqueando tus firmas. El problema no es tu talento: es cómo te estás presentando al mercado. Este gap es sutil pero muy costoso si no lo identificas a tiempo.",
+    cta: "Necesitas un diagnóstico personalizado para encontrar ese punto ciego que te está frenando.",
+  };
+  if (pct >= 0.52) return {
+    level: "Productor con potencial — sin sistema para aprovecharlo",
+    color: "#e05c00", emoji: "🔥",
+    desc: "Tienes buena música y algo de experiencia, pero te falta un sistema claro: no sabes exactamente a quién contactar, cómo presentarte ni cómo construir relaciones en la industria. Estás trabajando duro pero sin dirección estratégica, y eso agota.",
+    cta: "Sin un sistema probado, seguirás enviando demos al vacío. Hay una forma más inteligente de hacerlo.",
+  };
+  if (pct >= 0.28) return {
+    level: "Productor invisible — la industria no sabe que existes",
+    color: "#c0392b", emoji: "🚨",
+    desc: "Tu problema no es solo la música: eres prácticamente invisible para la industria. Sin marca personal, sin networking y sin estrategia, los sellos no pueden encontrarte aunque quieran. Puedes tener los mejores tracks del mundo y no importará.",
+    cta: "La visibilidad y el posicionamiento se construyen. Pero necesitas saber exactamente por dónde empezar.",
+  };
+  return {
+    level: "Productor en punto cero — sin base para firmar",
+    color: "#922b21", emoji: "🛑",
+    desc: "Estás en una fase muy inicial. Todavía no tienes los cimientos mínimos que un sello necesita ver: releases, presencia, red de contactos y un sonido definido. La buena noticia es que esto tiene solución, pero requiere un plan estructurado y acción inmediata.",
+    cta: "Sin los cimientos correctos, cada demo que envíes será ignorada. Hay que construir desde la base.",
+  };
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const total = questions.length;
+  const pct = ((current + 1) / total) * 100;
+  document.getElementById('app').innerHTML = `
+    <div class="card">
+      ${current === 0 ? `
+      <div class="david-header">
+        <img class="david-img" src="david.png" alt="David Cañada"/>
+        <div style="font-size:15px;color:#fff;font-weight:600;text-align:center;margin-top:4px;line-height:1.6;">Mentor de productores<br/>Minimal / Deep Tech / Tech House</div>
+      </div>
+      <div class="header">
+        <div class="label">Diagnóstico gratuito</div>
+        <h1>¿Por qué no firmas?</h1>
+        <p class="subtitle2">El diagnóstico que nadie te ha hecho</p>
+        <p class="subtitle">15 preguntas · 4 minutos · Resultado inmediato</p>
+      </div>` : ''}
+      <div class="progress-row">
+        <span class="area">${q.area}</span>
+        <span class="counter">${current + 1} / ${total}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="question-card">
+        <p class="question-text">${q.text}</p>
+        <div class="options">
+          ${q.options.map((opt, i) => `
+            <button class="opt-btn${selectedIdx === i ? ' selected' : ''}" onclick="selectOpt(${i})">
+              <span class="letter">${['A','B','C','D'][i]}</span>${opt.text}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+      <button class="next-btn${selectedIdx !== null ? ' active' : ''}" onclick="nextQuestion()" ${selectedIdx === null ? 'disabled' : ''}>
+        ${current + 1 === total ? 'Ver mi diagnóstico →' : 'Siguiente →'}
+      </button>
+    </div>
+  `;
+}
+
+function selectOpt(i) {
+  selectedIdx = i;
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (selectedIdx === null) return;
+  const q = questions[current];
+  answers[q.id] = q.options[selectedIdx].score;
+  selectedIdx = null;
+  if (current + 1 < questions.length) {
+    current++;
+    renderQuestion();
+  } else {
+    renderResult();
+  }
+}
+
+function renderResult() {
+  const score = Object.values(answers).reduce((a, b) => a + b, 0);
+  const r = getResult(score);
+  const areaRows = questions.map(q => {
+    const s = answers[q.id] ?? 0;
+    const mx = Math.max(...q.options.map(o => o.score));
+    const pct = mx === 0 ? 0 : s / mx;
+    const col = pct === 0 ? "#c0392b" : pct < 0.5 ? "#e05c00" : pct < 1 ? "#f0a500" : "#2ecc71";
+    const label = pct === 0 ? "Crítico" : pct < 0.5 ? "Débil" : pct < 1 ? "Regular" : "Fuerte";
+    return `
+      <div class="area-row">
+        <div class="area-label-row"><span>${q.area}</span><span style="color:${col}">${label}</span></div>
+        <div class="area-bar"><div class="bar-fill" style="width:${pct*100}%;background:${col}"></div></div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div class="result-wrap">
+      <div class="result-header">
+        <div class="result-emoji">${r.emoji}</div>
+        <div class="result-level" style="color:${r.color}">${r.level}</div>
+        <div class="result-score">Puntuación: ${score} / ${maxScore}</div>
+      </div>
+      <div class="box">
+        <div class="box-title">Nivel general</div>
+        <div class="bar-wrap"><div class="bar-fill" style="width:${(score/maxScore)*100}%;background:linear-gradient(90deg,${r.color},#ff6b6b)"></div></div>
+        <div class="bar-labels"><span>0</span><span>${maxScore}</span></div>
+      </div>
+      <div class="box">
+        <div class="box-title">Desglose por área</div>
+        ${areaRows}
+      </div>
+      <div class="diag-box" style="background:#1a1a1a;border:1px solid ${r.color}55">
+        <div class="diag-title" style="color:${r.color}">🔍 Tu diagnóstico</div>
+        <p class="diag-text">${r.desc}</p>
+      </div>
+      <div class="cta-box" style="border:1px solid #FFDC00">
+        <div class="cta-title">¿Y ahora qué?</div>
+        <p class="cta-text">${r.cta}</p>
+        <p style="font-size:15px;color:#fff;margin-bottom:20px;line-height:1.7;">Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style="color:#FFDC00;font-weight:700;">FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.</p>
+        <button class="cta-btn" onclick="window.open('https://ig.me/m/davidcanadamusic','_blank')">Escribir a David Cañada →</button>
+        <div class="cta-user">@davidcanadamusic</div>
+      </div>
+    </div>
+  `;
+}
+
+function restartTest() {
+  current = 0;
+  answers = {};
+  selectedIdx = null;
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
