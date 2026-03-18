@@ -188,7 +188,18 @@ let current = 0;
 let answers = {};
 let selectedIdx = null;
 
-function getResult(score) {
+function getWeakestArea(answersMap) {
+  let weakest = null, lowestPct = Infinity;
+  questions.forEach(q => {
+    const s = answersMap[q.id] ?? 0;
+    const mx = Math.max(...q.options.map(o => o.score));
+    const pct = mx === 0 ? 0 : s / mx;
+    if (pct < lowestPct) { lowestPct = pct; weakest = q.area; }
+  });
+  return weakest;
+}
+
+function getResult(score, weakArea) {
   const pct = score / maxScore;
   if (score === maxScore) return {
     level: "Puntuación perfecta — el bloqueo no está donde crees",
@@ -199,26 +210,26 @@ function getResult(score) {
   if (pct >= 0.78) return {
     level: "Productor preparado — pero algo falla en tu estrategia",
     color: "#f0a500", emoji: "⚡",
-    desc: "Tu música y conocimiento son sólidos, pero algo en tu estrategia de posicionamiento o networking está bloqueando tus firmas. El problema no es tu talento: es cómo te estás presentando al mercado. Este gap es sutil pero muy costoso si no lo identificas a tiempo.",
-    cta: "Necesitas un diagnóstico personalizado para encontrar ese punto ciego que te está frenando.",
+    desc: "Tienes casi todo lo necesario, y precisamente por eso este bloqueo es tan desconcertante. Cuando alguien llega a este nivel y no firma, hay un punto ciego muy concreto actuando como techo. Suele ser algo que no se ve desde dentro — y que tampoco se resuelve con más información.",
+    cta: `El área que más llama la atención en tu caso es <strong>${weakArea}</strong> — pero en perfiles como el tuyo, el problema real rara vez está donde parece. En una llamada lo analizamos juntos y te doy el paso exacto que te falta.`,
   };
   if (pct >= 0.52) return {
     level: "Productor con potencial — sin sistema para aprovecharlo",
     color: "#e05c00", emoji: "🔥",
-    desc: "Tienes buena música y algo de experiencia, pero te falta un sistema claro: no sabes exactamente a quién contactar, cómo presentarte ni cómo construir relaciones en la industria. Estás trabajando duro pero sin dirección estratégica, y eso agota.",
-    cta: "Sin un sistema probado, seguirás enviando demos al vacío. Hay una forma más inteligente de hacerlo.",
+    desc: "Estás más cerca de lo que crees, pero sin un sistema claro cada esfuerzo que haces se diluye. Conozco este punto — es el más frustrante porque ves que otros con menos talento firman antes que tú. La diferencia no es la música. Es el sistema.",
+    cta: `El eslabón más débil de tu cadena es <strong>${weakArea}</strong> — pero en este nivel, ese dato por sí solo no te dice nada accionable. Lo que importa es entender por qué está fallando en tu situación concreta. Eso es lo que trabajamos en una llamada.`,
   };
   if (pct >= 0.28) return {
     level: "Productor invisible — la industria no sabe que existes",
     color: "#c0392b", emoji: "🚨",
-    desc: "Tu problema no es solo la música: eres prácticamente invisible para la industria. Sin marca personal, sin networking y sin estrategia, los sellos no pueden encontrarte aunque quieran. Puedes tener los mejores tracks del mundo y no importará.",
-    cta: "La visibilidad y el posicionamiento se construyen. Pero necesitas saber exactamente por dónde empezar.",
+    desc: "Tienes música, tienes ganas, pero la industria actúa como si no existieras. Esto no es un problema de talento — es un problema de visibilidad estratégica. He trabajado con productores en tu misma situación que en pocos meses consiguieron sus primeras firmas simplemente cambiando cómo se presentaban al mercado.",
+    cta: `Tu mayor freno en este momento es <strong>${weakArea}</strong> — aunque casi nunca es solo eso. Detrás de ese área siempre hay una causa raíz que no se ve en un test. En una llamada la identificamos y te digo exactamente cómo revertirlo.`,
   };
   return {
     level: "Productor en punto cero — sin base para firmar",
     color: "#922b21", emoji: "🛑",
-    desc: "Estás en una fase muy inicial. Todavía no tienes los cimientos mínimos que un sello necesita ver: releases, presencia, red de contactos y un sonido definido. La buena noticia es que esto tiene solución, pero requiere un plan estructurado y acción inmediata.",
-    cta: "Sin los cimientos correctos, cada demo que envíes será ignorada. Hay que construir desde la base.",
+    desc: "Estás en el inicio del camino, y eso no es malo — es información valiosa. La mayoría de productores en tu situación llevan años dando vueltas en círculos porque nadie les ha dicho exactamente qué construir primero. Hay un orden específico para pasar de cero a firmado, y saltarse pasos es la razón por la que muchos abandonan.",
+    cta: `Tu área más crítica ahora mismo es <strong>${weakArea}</strong> — pero lo que hay detrás de ese dato es más profundo de lo que parece a simple vista. En una llamada te explico qué significa exactamente en tu caso y por dónde hay que empezar.`,
   };
 }
 
@@ -281,7 +292,8 @@ function nextQuestion() {
 
 function renderResult() {
   const score = Object.values(answers).reduce((a, b) => a + b, 0);
-  const r = getResult(score);
+  const weakArea = getWeakestArea(answers);
+  const r = getResult(score, weakArea);
   const areaRows = questions.map(q => {
     const s = answers[q.id] ?? 0;
     const mx = Math.max(...q.options.map(o => o.score));
@@ -317,7 +329,8 @@ function renderResult() {
       </div>
       <div class="cta-box" style="border:1px solid #ffe100">
         <div class="cta-title">¿Y ahora qué?</div>
-        <p class="cta-text">${r.cta}</p>
+        <p class="cta-text">${r.desc}</p>
+        <p style="font-size:15px;color:#fff;margin-bottom:20px;line-height:1.7;">${r.cta}</p>
         <p style="font-size:15px;color:#fff;margin-bottom:20px;line-height:1.7;">Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style="color:#ffe100;font-weight:700;">FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.</p>
         <button class="cta-btn" onclick="window.open('https://ig.me/m/davidcanadamusic','_blank')">Escribir a David Cañada →</button>
         <div class="cta-user">@davidcanadamusic</div>
