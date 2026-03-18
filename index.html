@@ -20,8 +20,6 @@
     .card { max-width: 580px; width: 100%; }
     .david-header { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 28px; }
     .david-img { width: 100%; max-width: 300px; height: auto; border-radius: 16px; }
-    .david-name { font-size: 13px; color: #ffe100; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-    .david-role { font-size: 12px; color: #fff; margin-top: 2px; }
     .header { text-align: center; margin-bottom: 28px; }
     .label { font-size: 15px; color: #ffe100; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
     h1 { font-size: 26px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; }
@@ -66,7 +64,7 @@
     .diag-box { border-radius: 12px; padding: 18px; margin-bottom: 20px; }
     .diag-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
     .diag-text { font-size: 16px; color: #fff; line-height: 1.75; }
-    .cta-box { background: #111; border-radius: 12px; padding: 24px; text-align: center; }
+    .cta-box { background: #111; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; }
     .cta-title { font-size: 15px; color: #ffe100; font-weight: 700; margin-bottom: 8px; }
     .cta-text { font-size: 16px; color: #fff; line-height: 1.7; margin-bottom: 20px; }
     .cta-btn {
@@ -212,40 +210,63 @@ function formatAreas(areas) {
   return areas.slice(0, -1).map(a => `<strong>${a}</strong>`).join(', ') + ` y <strong>${areas[areas.length - 1]}</strong>`;
 }
 
+function getWeakText(areas, singular, plural, multiple) {
+  if (areas.length >= 3) return multiple(formatAreas(areas));
+  if (areas.length === 2) return plural(formatAreas(areas));
+  return singular(formatAreas(areas));
+}
+
 function getResult(score, areas) {
   const pct = score / maxScore;
-  const plural = areas.length > 1;
   const areaText = formatAreas(areas);
+
+  const multipleText = (a) => `Las áreas que presentan mayor debilidad en tu caso son ${a} — y el hecho de que sean varias simultáneamente no es casualidad. En mi experiencia, cuando varios pilares fallan a la vez, no se trata de problemas independientes: hay una causa raíz común que los está arrastrando a todos. Intentar resolver cada uno por separado sin identificar esa raíz es perder tiempo y energía. Necesita un análisis personalizado para ver exactamente qué está generando ese patrón — y eso no se puede hacer en un test. Se hace en una conversación.`;
 
   if (score === maxScore) return {
     level: "Puntuación perfecta — el bloqueo no está donde crees",
     color: "#ffe100", emoji: "🎯",
-    desc: "Llevas años en esto y se nota. Tienes el sonido, los conocimientos, los contactos y la visión. En más de una década trabajando con productores, he aprendido que cuando alguien domina todos los aspectos técnicos e industriales y aun así no firma, el freno casi nunca está en la música ni en la estrategia visible. Está en capas más profundas: patrones de autosabotaje, gestión del momento oportuno, cómo te posicionas en una conversación clave, o una brecha entre cómo te percibes y cómo te percibe la industria. Son bloqueos sutiles, invisibles en un test, pero absolutamente determinantes. Este tipo de diagnóstico no se puede hacer con preguntas de opción múltiple. Requiere una conversación real.",
+    diag: "Llevas años en esto y se nota. Tienes el sonido, los conocimientos, los contactos y la visión. En más de una década trabajando con productores, he aprendido que cuando alguien domina todos los aspectos técnicos e industriales y aun así no firma, el freno casi nunca está en la música ni en la estrategia visible. Está en capas más profundas: patrones de autosabotaje, gestión del momento oportuno, cómo te posicionas en una conversación clave, o una brecha entre cómo te percibes y cómo te percibe la industria. Son bloqueos sutiles, invisibles en un test, pero absolutamente determinantes. Este tipo de diagnóstico no se puede hacer con preguntas de opción múltiple. Requiere una conversación real.",
     cta: "Si realmente tienes todo lo que indica este test, lo que necesitas no es más información — es que alguien con experiencia te observe, te escuche y te diga exactamente qué está pasando. Eso es lo que hago en una llamada.",
   };
   if (pct >= 0.78) return {
     level: "Productor preparado — pero algo falla en tu estrategia",
     color: "#f0a500", emoji: "⚡",
-    desc: `Tienes casi todo lo necesario, y precisamente por eso este bloqueo es tan desconcertante. Cuando alguien llega a este nivel y no firma, hay un punto ciego muy concreto actuando como techo. Suele ser algo que no se ve desde dentro — y que tampoco se resuelve con más información.<br/><br/>${plural ? `Las áreas que más llaman la atención en tu caso son ${areaText} — pero en perfiles como el tuyo, el problema real rara vez está donde parece. En una llamada lo analizamos juntos y te doy el paso exacto que te falta.` : `El área que más llama la atención en tu caso es ${areaText} — pero en perfiles como el tuyo, el problema real rara vez está donde parece. En una llamada lo analizamos juntos y te doy el paso exacto que te falta.`}`,
-    cta: "",
+    diag: `Tienes casi todo lo necesario, y precisamente por eso este bloqueo es tan desconcertante. Cuando alguien llega a este nivel y no firma, hay un punto ciego muy concreto actuando como techo. Suele ser algo que no se ve desde dentro — y que tampoco se resuelve con más información.<br/><br/>${getWeakText(areas,
+      a => `El área que más llama la atención en tu caso es ${a} — pero en perfiles como el tuyo, el problema real rara vez está donde parece. En una llamada lo analizamos juntos y te doy el paso exacto que te falta.`,
+      a => `Las áreas que más llaman la atención en tu caso son ${a} — pero en perfiles como el tuyo, el problema real rara vez está donde parece. En una llamada lo analizamos juntos y te doy el paso exacto que te falta.`,
+      multipleText
+    )}`,
+    cta: "Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style='color:#ffe100;font-weight:700;'>FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.",
   };
   if (pct >= 0.52) return {
     level: "Productor con potencial — sin sistema para aprovecharlo",
     color: "#e05c00", emoji: "🔥",
-    desc: `Estás más cerca de lo que crees, pero sin un sistema claro cada esfuerzo que haces se diluye. Conozco este punto — es el más frustrante porque ves que otros con menos talento firman antes que tú. La diferencia no es la música. Es el sistema.<br/><br/>${plural ? `Los eslabones más débiles de tu cadena son ${areaText} — pero esos datos por sí solos no te dicen nada accionable. Lo que importa es entender por qué están fallando en tu situación concreta. Eso es lo que trabajamos en una llamada.` : `El eslabón más débil de tu cadena es ${areaText} — pero ese dato por sí solo no te dice nada accionable. Lo que importa es entender por qué está fallando en tu situación concreta. Eso es lo que trabajamos en una llamada.`}`,
-    cta: "",
+    diag: `Estás más cerca de lo que crees, pero sin un sistema claro cada esfuerzo que haces se diluye. Conozco este punto — es el más frustrante porque ves que otros con menos talento firman antes que tú. La diferencia no es la música. Es el sistema.<br/><br/>${getWeakText(areas,
+      a => `El eslabón más débil de tu cadena es ${a} — pero ese dato por sí solo no te dice nada accionable. Lo que importa es entender por qué está fallando en tu situación concreta. Eso es lo que trabajamos en una llamada.`,
+      a => `Los eslabones más débiles de tu cadena son ${a} — pero esos datos por sí solos no te dicen nada accionable. Lo que importa es entender por qué están fallando en tu situación concreta. Eso es lo que trabajamos en una llamada.`,
+      multipleText
+    )}`,
+    cta: "Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style='color:#ffe100;font-weight:700;'>FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.",
   };
   if (pct >= 0.28) return {
     level: "Productor invisible — la industria no sabe que existes",
     color: "#c0392b", emoji: "🚨",
-    desc: `Tienes música, tienes ganas, pero la industria actúa como si no existieras. Esto no es un problema de talento — es un problema de visibilidad estratégica. He trabajado con productores en tu misma situación que en pocos meses consiguieron sus primeras firmas simplemente cambiando cómo se presentaban al mercado.<br/><br/>${plural ? `Tus mayores frenos en este momento son ${areaText} — aunque casi nunca es solo eso. Detrás de esas áreas siempre hay una causa raíz que no se ve en un test. En una llamada la identificamos y te digo exactamente cómo revertirlo.` : `Tu mayor freno en este momento es ${areaText} — aunque casi nunca es solo eso. Detrás de ese área siempre hay una causa raíz que no se ve en un test. En una llamada la identificamos y te digo exactamente cómo revertirlo.`}`,
-    cta: "",
+    diag: `Tienes música, tienes ganas, pero la industria actúa como si no existieras. Esto no es un problema de talento — es un problema de visibilidad estratégica. He trabajado con productores en tu misma situación que en pocos meses consiguieron sus primeras firmas simplemente cambiando cómo se presentaban al mercado.<br/><br/>${getWeakText(areas,
+      a => `Tu mayor freno en este momento es ${a} — aunque casi nunca es solo eso. Detrás de ese área siempre hay una causa raíz que no se ve en un test. En una llamada la identificamos y te digo exactamente cómo revertirlo.`,
+      a => `Tus mayores frenos en este momento son ${a} — aunque casi nunca es solo eso. Detrás de esas áreas siempre hay una causa raíz que no se ve en un test. En una llamada la identificamos y te digo exactamente cómo revertirlo.`,
+      multipleText
+    )}`,
+    cta: "Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style='color:#ffe100;font-weight:700;'>FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.",
   };
   return {
     level: "Productor en punto cero — sin base para firmar",
     color: "#922b21", emoji: "🛑",
-    desc: `Estás en el inicio del camino, y eso no es malo — es información valiosa. La mayoría de productores en tu situación llevan años dando vueltas en círculos porque nadie les ha dicho exactamente qué construir primero. Hay un orden específico para pasar de cero a firmado, y saltarse pasos es la razón por la que muchos abandonan.<br/><br/>${plural ? `Tus áreas más críticas ahora mismo son ${areaText} — pero lo que hay detrás de esos datos es más profundo de lo que parece a simple vista. En una llamada te explico qué significa exactamente en tu caso y por dónde hay que empezar.` : `Tu área más crítica ahora mismo es ${areaText} — pero lo que hay detrás de ese dato es más profundo de lo que parece a simple vista. En una llamada te explico qué significa exactamente en tu caso y por dónde hay que empezar.`}`,
-    cta: "",
+    diag: `Estás en el inicio del camino, y eso no es malo — es información valiosa. La mayoría de productores en tu situación llevan años dando vueltas en círculos porque nadie les ha dicho exactamente qué construir primero. Hay un orden específico para pasar de cero a firmado, y saltarse pasos es la razón por la que muchos abandonan.<br/><br/>${getWeakText(areas,
+      a => `Tu área más crítica ahora mismo es ${a} — pero lo que hay detrás de ese dato es más profundo de lo que parece a simple vista. En una llamada te explico qué significa exactamente en tu caso y por dónde hay que empezar.`,
+      a => `Tus áreas más críticas ahora mismo son ${a} — pero lo que hay detrás de esos datos es más profundo de lo que parece a simple vista. En una llamada te explico qué significa exactamente en tu caso y por dónde hay que empezar.`,
+      multipleText
+    )}`,
+    cta: "Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style='color:#ffe100;font-weight:700;'>FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.",
   };
 }
 
@@ -310,6 +331,7 @@ function renderResult() {
   const score = Object.values(answers).reduce((a, b) => a + b, 0);
   const weakAreas = getWeakestAreas(answers);
   const r = getResult(score, weakAreas);
+
   const areaRows = questions.map(q => {
     const s = answers[q.id] ?? 0;
     const mx = Math.max(...q.options.map(o => o.score));
@@ -341,8 +363,11 @@ function renderResult() {
       </div>
       <div class="diag-box" style="background:#1a1a1a;border:1px solid ${r.color}55">
         <div class="diag-title" style="color:${r.color}">🔍 Tu diagnóstico</div>
-        <p class="diag-text">${r.desc}</p>
-        <p style="font-size:15px;color:#fff;margin-bottom:20px;line-height:1.7;">Pulsa el botón, entra en mi Instagram y escríbeme la palabra <span style="color:#ffe100;font-weight:700;">FIRMAR</span>. Te respondo personalmente y te explico el siguiente paso.</p>
+        <p class="diag-text">${r.diag}</p>
+      </div>
+      <div class="cta-box" style="border:1px solid #ffe100">
+        <div class="cta-title">¿Y ahora qué?</div>
+        <p class="cta-text">${r.cta}</p>
         <button class="cta-btn" onclick="window.open('https://ig.me/m/davidcanadamusic','_blank')">Escribir a David Cañada →</button>
         <div class="cta-user">@davidcanadamusic</div>
       </div>
